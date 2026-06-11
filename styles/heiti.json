@@ -1,0 +1,16 @@
+{
+  "name": "ZiGui Hei Demo",
+  "ps_name": "ZiGuiHeiDemo-Regular",
+  "stroke": {
+    "h_width": 72,
+    "v_width": 78,
+    "heng_tilt": 0,
+    "cap": "flat",
+    "corner": "miter",
+    "pie_tip": 0.34,
+    "na_peak": 1.35,
+    "na_head": 0.5,
+    "hook_len": 95,
+    "dun_size": 0
+  }
+}

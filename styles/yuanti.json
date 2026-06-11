@@ -1,0 +1,16 @@
+{
+  "name": "ZiGui Yuan Demo",
+  "ps_name": "ZiGuiYuanDemo-Regular",
+  "stroke": {
+    "h_width": 70,
+    "v_width": 74,
+    "heng_tilt": 0,
+    "cap": "round",
+    "corner": "round",
+    "pie_tip": 0.5,
+    "na_peak": 1.1,
+    "na_head": 0.65,
+    "hook_len": 88,
+    "dun_size": 0
+  }
+}

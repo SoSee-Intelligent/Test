@@ -1,0 +1,21 @@
+{
+  "name": "ZiGui Blend 50",
+  "ps_name": "ZiGuiBlend50-Regular",
+  "blend_of": [
+    "ZiGui Hei Demo",
+    "ZiGui Song Demo",
+    0.5
+  ],
+  "stroke": {
+    "cap": "dun",
+    "corner": "bump",
+    "dun_size": 0.75,
+    "h_width": 54.0,
+    "heng_tilt": 7.0,
+    "hook_len": 105.0,
+    "na_head": 0.3,
+    "na_peak": 1.55,
+    "pie_tip": 0.21,
+    "v_width": 80.0
+  }
+}
