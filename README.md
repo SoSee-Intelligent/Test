@@ -17,11 +17,29 @@
 
 ```bash
 pip install fonttools pillow
-python -m zigui                    # 构建 styles/ 下全部风格 → dist/*.otf + 样张
+python -m zigui                    # 构建 styles/ 下全部风格 → dist/*.otf + 存证清单 + 样张
 python -m zigui styles/songti.json # 只构建指定风格
+
+# 高效创作：两套参数插值出第三套字体（零绘制创作）
+python -m zigui blend styles/heiti.json styles/songti.json 0.5 -o styles/heisong50.json
+
+# 高效查重：任意两个字体文件逐字比对，输出风险报告
+python -m zigui compare dist/heiti.otf dist/songti.otf --json dist/similarity_report.json
 ```
 
 生成的 OTF 为标准字体文件，可直接安装到系统中使用。
+
+## 三大效率机制（生态市场的地基）
+
+- **高效创作**（`zigui/blend.py`）：风格参数空间插值，创作者不画一个字也能
+  "调"出一套新字体；字库级的高效靠部件复用（见路线图）。
+- **高效查重**（`zigui/fingerprint.py`）：字形归一化栅格化后逐字算 IoU，
+  三档风险结论。平台内字体自带骨架数据，后续可升级为笔画级精确比对——
+  这是外部查重工具拿不到的数据优势。
+- **高效确权**（`zigui/evidence.py`）：字体不适用专利，走著作权
+  （软著 + 美术作品登记）；每次生成自动产出参数与成品的 SHA-256 +
+  UTC 时间戳 + 独创性声明的存证清单（`dist/*.evidence.json`），
+  登记材料一键导出，后续可叠加可信时间戳（TSA）与登记机构电子申请对接。
 
 ## 架构
 
@@ -57,7 +75,8 @@ python -m zigui styles/songti.json # 只构建指定风格
       用部件组合覆盖 GB2312 全集，骨架数据可从公开笔顺骨架数据集导入
 - [ ] 参数可视化调节界面（拖动滑杆实时预览）
 - [ ] TTF 输出、可变字体（线宽对比做成可变轴）
-- [ ] 与已知商业字库的相似度自检报告
+- [x] 相似度自检（图像级 IoU，本原型）
+- [ ] 笔画级精确查重（骨架对齐 + 参数距离）、全库指纹索引
 
 ## 法律定位
 

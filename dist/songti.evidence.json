@@ -1,0 +1,14 @@
+{
+  "engine": "ZiGui 0.1.0",
+  "generated_at": "2026-06-11T11:38:46+00:00",
+  "style_file": {
+    "path": "songti.json",
+    "sha256": "7d0e8503baa845f128091b61631570dd4627857456c7bdfe2071ed31f71c57db"
+  },
+  "font_file": {
+    "path": "songti.otf",
+    "sha256": "028ad94245e016285a0a31f460faf60e7122a5f716110bad1e5379427d99102e"
+  },
+  "glyph_coverage": "一十王口中日人大天木永",
+  "statement": "本字体由字规（ZiGui）参数化引擎根据自有笔画骨架数据与本清单所列风格参数文件生成，生成过程未参照、训练或演绎任何第三方字体。"
+}
