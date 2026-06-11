@@ -1,13 +1,13 @@
 {
   "engine": "ZiGui 0.1.0",
-  "generated_at": "2026-06-11T11:38:46+00:00",
+  "generated_at": "2026-06-11T12:13:44+00:00",
   "style_file": {
     "path": "heisong50.json",
-    "sha256": "a20c10e4ddab054e83f9a711e6823dacaaa56e26f7bcb4bd2eda4d0e57e5f4f5"
+    "sha256": "f889c097129085b4511a13e7d24f40b316a0cd281100afaf0fb60768e416becb"
   },
   "font_file": {
     "path": "heisong50.otf",
-    "sha256": "9dd7be388b8e2750e9d3f78a25509617a98068dac8853c6793daecd65bc75efb"
+    "sha256": "44f42a6cd82f874c682258cdcaedd00a20f5e784b3e3051ce245d19f6f362e45"
   },
   "glyph_coverage": "一十王口中日人大天木永",
   "statement": "本字体由字规（ZiGui）参数化引擎根据自有笔画骨架数据与本清单所列风格参数文件生成，生成过程未参照、训练或演绎任何第三方字体。"

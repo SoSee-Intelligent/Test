@@ -75,11 +75,28 @@ def cmd_blend(argv):
         print(text)
 
 
+def cmd_order(argv):
+    from .preview import render_order_sheet
+    from .strokes import Strokes, glyph_stroke_contours
+    from .glyphs import GLYPHS
+
+    style_path = Path(argv[0]) if argv else ROOT / "styles" / "songti.json"
+    style = json.loads(style_path.read_text(encoding="utf-8"))
+    strokes = Strokes(style)
+    per_char = {ch: glyph_stroke_contours(strokes, specs) for ch, specs in GLYPHS.items()}
+    out = ROOT / "dist" / "stroke_order.png"
+    out.parent.mkdir(exist_ok=True)
+    render_order_sheet(per_char, CHARS, out)
+    print(f"笔顺校对图已输出 {out}（{style['name']}）")
+
+
 def main(argv):
     if argv and argv[0] == "compare":
         cmd_compare(argv[1:])
     elif argv and argv[0] == "blend":
         cmd_blend(argv[1:])
+    elif argv and argv[0] == "order":
+        cmd_order(argv[1:])
     else:
         cmd_build(argv)
 

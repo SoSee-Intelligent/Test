@@ -20,6 +20,7 @@ class Strokes:
         self.corner = s.get("corner", "miter")  # 折角风格: miter | bump
         self.pie_tip = s.get("pie_tip", 0.3)   # 撇收锋处宽度比
         self.na_peak = s.get("na_peak", 1.5)   # 捺最宽处相对竖宽
+        self.na_head = s.get("na_head", 0.35)  # 捺入笔宽度比（黑体粗、宋体细）
         self.hook_len = s.get("hook_len", 105)  # 钩长
 
     # ---- 基本笔画 ----
@@ -86,25 +87,41 @@ class Strokes:
             k = v * (tip + (1 - tip) * (1 - t) ** 1.35)
             return (k, k)
 
-        return [ribbon(pts, width)]
+        contours = [ribbon(pts, width)]
+        if self.cap == "dun":
+            d = self.vw * 0.7
+            contours.append([
+                (p0[0] - v - d * 0.35, p0[1] + d * 0.6),
+                (p0[0] + v + d * 0.15, p0[1] + d * 0.1),
+                (p0[0] + v, p0[1] - d * 0.55),
+                (p0[0] - v, p0[1] - d * 0.45),
+            ])
+        return contours
 
     def na(self, p0, p3):
-        """捺：入笔轻，渐行渐重，捺脚铺开后收锋。上缘先于下缘收束。"""
-        c1 = (lerp(p0, p3, 0.35)[0], lerp(p0, p3, 0.35)[1] - 28)
-        c2 = (lerp(p0, p3, 0.72)[0], lerp(p0, p3, 0.72)[1] - 22)
-        pts = sample_cubic(p0, c1, c2, p3, 36)
+        """捺：一波三折。入笔轻、中段渐重、捺脚铺开后向右水平出锋。
+
+        骨架末端切线压平（c2 与终点近同高），保证捺脚水平出锋；
+        上缘先收、下缘铺平，形成楷法捺脚"顿而后出"的形态。
+        """
+        dx = p3[0] - p0[0]
+        dy = p0[1] - p3[1]
+        c1 = (p0[0] + dx * 0.34, p0[1] - dy * 0.42)
+        c2 = (p3[0] - dx * 0.40, p3[1] + dy * 0.04)
+        pts = sample_cubic(p0, c1, c2, p3, 40)
         peak = self.vw * self.na_peak / 2
+        head = self.na_head
 
         def width(t):
             if t < 0.78:
                 k = t / 0.78
-                upper = peak * (0.16 + 0.84 * k**1.1)
-                lower = peak * (0.10 + 0.55 * k)
+                upper = peak * (head + (1 - head) * k**1.3)
+                lower = peak * (0.06 + 0.50 * k)
             else:
                 k = (t - 0.78) / 0.22
-                upper = peak * (1 - k**0.8)        # 上缘快速收锋
-                lower = peak * 0.65 * (1 - k * 0.7)  # 下缘铺出捺脚
-            return (max(upper, 1.0), max(lower, 1.0))
+                upper = peak * (1 - k) ** 1.25       # 上缘斜切收向尖端
+                lower = peak * 0.56 * (1 - k)        # 下缘随水平骨架铺平出锋
+            return (max(upper, 0.8), max(lower, 0.8))
 
         return [ribbon(pts, width)]
 
@@ -209,10 +226,14 @@ class Strokes:
         return [ribbon(pts, width)] + self._hook(x1, y1, direction="up")
 
 
+def glyph_stroke_contours(strokes, specs):
+    """逐笔生成轮廓（保留书写顺序分组），用于笔顺可视化。"""
+    return [
+        [ensure_cw(c) for c in getattr(strokes, spec[0])(*spec[1:])]
+        for spec in specs
+    ]
+
+
 def build_glyph_contours(strokes, specs):
     """按字形定义（笔画规格列表）生成全部轮廓，统一为顺时针方向。"""
-    contours = []
-    for spec in specs:
-        method = getattr(strokes, spec[0])
-        contours += method(*spec[1:])
-    return [ensure_cw(c) for c in contours]
+    return [c for group in glyph_stroke_contours(strokes, specs) for c in group]

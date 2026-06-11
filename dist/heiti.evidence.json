@@ -1,13 +1,13 @@
 {
   "engine": "ZiGui 0.1.0",
-  "generated_at": "2026-06-11T11:38:46+00:00",
+  "generated_at": "2026-06-11T12:13:44+00:00",
   "style_file": {
     "path": "heiti.json",
-    "sha256": "a65c7ab1ea4dfd33e6a103c9384074f048ca489d11fdd335ac223a16bc2ce64a"
+    "sha256": "83ceef57c6ab8a938591552f1ab6bc463a8ab88c9ec0d9817ee47e8cfad5197b"
   },
   "font_file": {
     "path": "heiti.otf",
-    "sha256": "036e0218d859da9ccabe447217ff943b669ad9a789559b1246436432cd6fa19c"
+    "sha256": "62d7d0c8ee247942c7f8fc9f9b2f1178eb9c875ef0adf191c5b67f2f79065ae9"
   },
   "glyph_coverage": "一十王口中日人大天木永",
   "statement": "本字体由字规（ZiGui）参数化引擎根据自有笔画骨架数据与本清单所列风格参数文件生成，生成过程未参照、训练或演绎任何第三方字体。"

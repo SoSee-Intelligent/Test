@@ -18,6 +18,36 @@ def _draw_glyph(draw, contours, ox, oy, scale):
         draw.polygon(pts, fill=(20, 20, 20))
 
 
+ORDER_PALETTE = [
+    (200, 40, 40), (230, 130, 20), (40, 140, 50), (30, 90, 200),
+    (130, 50, 180), (150, 90, 40), (200, 50, 140), (20, 150, 150),
+]
+
+
+def render_order_sheet(per_char_strokes, chars, out_path):
+    """笔顺校对图：每个字的笔画按书写顺序着色并标号。"""
+    cell = 230
+    pad = 20
+    width = len(chars) * cell + pad * 2
+    img = Image.new("RGB", (width, cell + pad * 2), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    scale = (cell - 16) / GLYPH_BOX
+    for col, ch in enumerate(chars):
+        ox, oy = pad + col * cell + 8, pad + 8
+        draw.rectangle([ox, oy, ox + cell - 16, oy + cell - 16], outline=(225, 225, 225))
+        for idx, stroke in enumerate(per_char_strokes[ch]):
+            color = ORDER_PALETTE[idx % len(ORDER_PALETTE)]
+            for contour in stroke:
+                pts = [(ox + x * scale, oy + (Y_TOP - y) * scale) for x, y in contour]
+                draw.polygon(pts, fill=color)
+            sx, sy = stroke[0][0]
+            draw.text(
+                (ox + sx * scale - 14, oy + (Y_TOP - sy) * scale - 14),
+                str(idx + 1), fill=color,
+            )
+    img.save(out_path)
+
+
 def render_specimen(rows, out_path):
     """rows: [(标签, {字符: 轮廓列表}, 字符顺序)]，每个风格渲染一行。"""
     n_chars = max(len(r[2]) for r in rows)
