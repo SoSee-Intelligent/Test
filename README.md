@@ -12,6 +12,12 @@
 |---|---|---|
 | `styles/heiti.json` | `dist/heiti.otf` | 横竖等宽、平头起收笔、直角折 |
 | `styles/songti.json` | `dist/songti.otf` | 横细竖粗、顿笔起收、折角顿角、撇捺出锋 |
+| `styles/yuanti.json` | `dist/yuanti.otf` | 圆头笔刷：圆帽起收笔、圆角折 |
+| `styles/heisong50.json` | `dist/heisong50.otf` | 黑宋参数五五插值（blend 生成） |
+
+核心抽象即"笔刷模板"：**骨架（笔顺）× 笔刷（入笔/行笔/出笔规则）= 字体**，
+与矢量软件中"笔刷应用于路径"同构。`cap`/`corner`/收锋参数就是笔刷的
+入笔出笔规则，新增一种笔刷即新增一族字体。
 
 ## 使用
 
@@ -25,6 +31,12 @@ python -m zigui blend styles/heiti.json styles/songti.json 0.5 -o styles/heisong
 
 # 高效查重：任意两个字体文件逐字比对，输出风险报告
 python -m zigui compare dist/heiti.otf dist/songti.otf --json dist/similarity_report.json
+
+# 笔顺校对图：笔画按书写顺序编号着色
+python -m zigui order styles/songti.json
+
+# 美学度量：字面墨量（灰度）与重心统计，自检一致性
+python -m zigui metrics dist/yuanti.otf
 ```
 
 生成的 OTF 为标准字体文件，可直接安装到系统中使用。
@@ -77,6 +89,10 @@ python -m zigui compare dist/heiti.otf dist/songti.otf --json dist/similarity_re
 - [ ] TTF 输出、可变字体（线宽对比做成可变轴）
 - [x] 相似度自检（图像级 IoU，本原型）
 - [ ] 笔画级精确查重（骨架对齐 + 参数距离）、全库指纹索引
+- [x] 美学度量（灰度/重心统计，本原型）
+- [ ] 美学校准：以 OFL 开源字体的灰度/重心/中宫统计分布为"尺度"参照
+      （学习度量分布，不接触、不复制任何字形）
+- [ ] 笔刷模板库扩充（楷、隶、毛笔等，含笔刷市场供创作者上架）
 
 ## 法律定位
 

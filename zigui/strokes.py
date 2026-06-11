@@ -6,7 +6,7 @@
 笔画骨架本身与风格无关——这正是"一套骨架、多套字体"的核心。
 """
 
-from .geometry import ensure_cw, lerp, ribbon, sample_cubic, sample_line
+from .geometry import circle, ensure_cw, lerp, ribbon, sample_cubic, sample_line
 
 
 class Strokes:
@@ -31,6 +31,11 @@ class Strokes:
         pts = sample_line(p0, p1, 8)
         h = self.hw / 2
         contours = [ribbon(pts, lambda t: (h, h))]
+        if self.cap == "round":
+            if start_cap:
+                contours.append(circle(p0, h))
+            if end_cap:
+                contours.append(circle(p1, h))
         if self.cap == "dun":
             d = self.hw * self.dun
             if start_cap:
@@ -56,6 +61,10 @@ class Strokes:
         pts = sample_line((x, y0), (x, y1), 8)
         v = self.vw / 2
         contours = [ribbon(pts, lambda t: (v, v))]
+        if self.cap == "round":
+            if top_cap:
+                contours.append(circle((x, y0), v))
+            contours.append(circle((x, y1), v))
         if self.cap == "dun":
             d = self.vw * 0.8
             if top_cap:
@@ -88,7 +97,9 @@ class Strokes:
             return (k, k)
 
         contours = [ribbon(pts, width)]
-        if self.cap == "dun":
+        if self.cap == "round":
+            contours += [circle(p0, v), circle(p3, v * tip)]
+        elif self.cap == "dun":
             d = self.vw * 0.7
             contours.append([
                 (p0[0] - v - d * 0.35, p0[1] + d * 0.6),
@@ -123,7 +134,10 @@ class Strokes:
                 lower = peak * 0.56 * (1 - k)        # 下缘随水平骨架铺平出锋
             return (max(upper, 0.8), max(lower, 0.8))
 
-        return [ribbon(pts, width)]
+        contours = [ribbon(pts, width)]
+        if self.cap == "round":
+            contours += [circle(p0, peak * head * 0.8), circle(p3, peak * 0.2)]
+        return contours
 
     def dian(self, p0, p3):
         """点：短促入笔、腹部饱满、向行笔方向收驻。"""
@@ -136,7 +150,10 @@ class Strokes:
             k = v * (0.2 + 0.75 * t) if t < 0.72 else v * (0.74 - 0.3 * (t - 0.72) / 0.28)
             return (k, k)
 
-        return [ribbon(pts, width)]
+        contours = [ribbon(pts, width)]
+        if self.cap == "round":
+            contours += [circle(p0, v * 0.25), circle(p3, v * 0.5)]
+        return contours
 
     def ti(self, p0, p3):
         """提：起笔重按，向右上挑出收锋。p0 为左下起点。"""
@@ -150,7 +167,10 @@ class Strokes:
             k = v * (tip + (1 - tip) * (1 - t) ** 1.2)
             return (k, k)
 
-        return [ribbon(pts, width)]
+        contours = [ribbon(pts, width)]
+        if self.cap == "round":
+            contours += [circle(p0, v), circle(p3, v * tip)]
+        return contours
 
     # ---- 钩与复合笔画 ----
 
@@ -185,7 +205,9 @@ class Strokes:
         bx = x1 - zhe_tilt
         pts = sample_line((x1, top + self.hw / 2), (bx, y1), 8)
         contours.append(ribbon(pts, lambda t: (v, v)))
-        if self.corner == "bump":
+        if self.corner == "round":
+            contours.append(circle((x1, top), self.vw / 2))
+        elif self.corner == "bump":
             d = self.vw * 0.85
             contours.append([
                 (x1 - self.vw, top + self.hw / 2),
@@ -223,7 +245,10 @@ class Strokes:
             k = v if t < 0.6 else v * (1 + 0.12 * (t - 0.6) / 0.4)
             return (k, k)
 
-        return [ribbon(pts, width)] + self._hook(x1, y1, direction="up")
+        contours = [ribbon(pts, width)]
+        if self.cap == "round":
+            contours.append(circle((x, y0), v))
+        return contours + self._hook(x1, y1, direction="up")
 
 
 def glyph_stroke_contours(strokes, specs):

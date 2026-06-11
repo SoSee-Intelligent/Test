@@ -85,6 +85,14 @@ def ribbon(points, width_at):
     return left + right[::-1]
 
 
+def circle(c, r, n=16):
+    """端点圆帽/圆角用的正多边形近似圆。"""
+    return [
+        (c[0] + r * math.cos(2 * math.pi * i / n), c[1] + r * math.sin(2 * math.pi * i / n))
+        for i in range(n)
+    ]
+
+
 def signed_area(pts):
     s = 0.0
     for i in range(len(pts)):

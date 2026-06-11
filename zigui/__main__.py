@@ -90,6 +90,21 @@ def cmd_order(argv):
     print(f"笔顺校对图已输出 {out}（{style['name']}）")
 
 
+def cmd_metrics(argv):
+    from .aesthetics import font_metrics
+
+    report = font_metrics(argv[0])
+    print(f"美学度量：{report['font']}")
+    print("字   墨量    重心x  重心y")
+    for ch, m in report["per_char"].items():
+        print(f"{ch}  {m['ink']:.4f}  {m['cx']:.3f}  {m['cy']:.3f}")
+    lo, hi = report["ink_range"]
+    print(f"灰度均值 {report['mean_ink']}（区间 {lo}~{hi}）")
+    if report["outliers"]:
+        print("灰度离群字（偏离均值 >45%，复杂度差异属正常，结构同级则需调参）："
+              + "、".join(report["outliers"]))
+
+
 def main(argv):
     if argv and argv[0] == "compare":
         cmd_compare(argv[1:])
@@ -97,6 +112,8 @@ def main(argv):
         cmd_blend(argv[1:])
     elif argv and argv[0] == "order":
         cmd_order(argv[1:])
+    elif argv and argv[0] == "metrics":
+        cmd_metrics(argv[1:])
     else:
         cmd_build(argv)
 
